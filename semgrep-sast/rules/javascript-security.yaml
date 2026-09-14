@@ -1,0 +1,67 @@
+rules:
+  - id: js-sql-injection-template-literal
+    patterns:
+      - pattern: $DB.query(`... ${$INPUT} ...`)
+      - pattern: $DB.query("..." + $INPUT + "...")
+    message: "SQL Injection: use parameterized queries instead of interpolation/concatenation."
+    languages: [javascript, typescript]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-89"}
+
+  - id: js-xss-innerhtml
+    patterns:
+      - pattern: $EL.innerHTML = $INPUT
+      - pattern: $EL.outerHTML = $INPUT
+      - pattern: document.write($INPUT)
+    message: "DOM XSS risk: avoid assigning untrusted input to HTML sinks."
+    languages: [javascript, typescript]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-79"}
+
+  - id: js-command-injection-exec
+    patterns:
+      - pattern: exec($CMD + $INPUT)
+      - pattern: exec(`...${$INPUT}...`)
+    message: "Command Injection: prefer execFile/spawn with explicit argument arrays."
+    languages: [javascript, typescript]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-78"}
+
+  - id: js-dangerous-eval
+    patterns:
+      - pattern: eval($INPUT)
+      - pattern: new Function($INPUT)
+    message: "Code Injection: avoid dynamic code execution with untrusted data."
+    languages: [javascript, typescript]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-95"}
+
+  - id: js-hardcoded-jwt-secret
+    patterns:
+      - pattern: jwt.sign($PAYLOAD, "...", ...)
+      - pattern: jwt.verify($TOKEN, "...", ...)
+    message: "Hardcoded JWT secret detected. Load secrets from a secure runtime source."
+    languages: [javascript, typescript]
+    severity: ERROR
+    metadata: {owasp: "A07:2021 - Identification and Authentication Failures", cwe: "CWE-798"}
+
+  - id: js-insecure-random
+    pattern: Math.random()
+    message: "Math.random() is not cryptographically secure for security tokens."
+    languages: [javascript, typescript]
+    severity: WARNING
+    metadata: {owasp: "A02:2021 - Cryptographic Failures", cwe: "CWE-338"}
+
+  - id: js-jwt-no-algorithm
+    pattern: jwt.verify($TOKEN, $SECRET)
+    message: "JWT verification should explicitly restrict accepted algorithms."
+    languages: [javascript, typescript]
+    severity: WARNING
+    metadata: {owasp: "A07:2021 - Identification and Authentication Failures", cwe: "CWE-347"}
+
+  - id: js-jwt-no-expiry
+    pattern: jwt.sign($PAYLOAD, $SECRET)
+    message: "JWT created without an explicit expiry."
+    languages: [javascript, typescript]
+    severity: WARNING
+    metadata: {owasp: "A07:2021 - Identification and Authentication Failures", cwe: "CWE-613"}
