@@ -1,0 +1,93 @@
+rules:
+  - id: sql-injection-string-concat
+    patterns:
+      - pattern: $CURSOR.execute("..." + $INPUT)
+    message: "SQL Injection: user input is concatenated into a SQL query. Use parameterized queries."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-89", confidence: HIGH}
+
+  - id: sql-injection-f-string
+    pattern: $CURSOR.execute(f"...{$VAR}...")
+    message: "SQL Injection: f-string used in SQL query. Use parameterized queries."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-89"}
+
+  - id: command-injection-os-system
+    patterns:
+      - pattern: os.system($CMD + ...)
+      - pattern: os.system(f"...{$VAR}...")
+    message: "Command Injection: os.system() receives dynamically constructed input."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-78"}
+
+  - id: command-injection-subprocess-shell-true
+    patterns:
+      - pattern: subprocess.run($CMD, ..., shell=True, ...)
+      - pattern: subprocess.Popen($CMD, ..., shell=True, ...)
+      - pattern: subprocess.call($CMD, ..., shell=True, ...)
+    message: "Command Injection risk: avoid shell=True for user-controlled input."
+    languages: [python]
+    severity: WARNING
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-78"}
+
+  - id: dangerous-eval
+    patterns:
+      - pattern: eval($INPUT)
+      - pattern: exec($INPUT)
+    message: "Code Injection: eval()/exec() can execute arbitrary Python code."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A03:2021 - Injection", cwe: "CWE-95"}
+
+  - id: path-traversal-open
+    patterns:
+      - pattern: open($BASE + $INPUT, ...)
+      - pattern: open(f"...{$INPUT}...", ...)
+    message: "Path Traversal risk: validate and constrain user-controlled file paths."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A01:2021 - Broken Access Control", cwe: "CWE-22"}
+
+  - id: hardcoded-password
+    patterns:
+      - pattern: $PASSWORD = "..."
+      - metavariable-regex:
+          metavariable: $PASSWORD
+          regex: (?i)(password|passwd|pwd|secret|credential|api_key|token)
+    message: "Hardcoded secret detected. Use environment variables or a secret manager."
+    languages: [python]
+    severity: WARNING
+    metadata: {owasp: "A02:2021 - Cryptographic Failures", cwe: "CWE-798"}
+
+  - id: weak-hash-md5
+    pattern: hashlib.md5(...)
+    message: "Weak hash: MD5 is unsuitable for password hashing and collision-resistant security use."
+    languages: [python]
+    severity: WARNING
+    metadata: {owasp: "A02:2021 - Cryptographic Failures", cwe: "CWE-327"}
+
+  - id: weak-hash-sha1
+    pattern: hashlib.sha1(...)
+    message: "Weak hash: SHA-1 is deprecated for security-sensitive collision resistance."
+    languages: [python]
+    severity: WARNING
+    metadata: {owasp: "A02:2021 - Cryptographic Failures", cwe: "CWE-327"}
+
+  - id: insecure-pickle
+    patterns:
+      - pattern: pickle.loads($DATA)
+      - pattern: pickle.load($FILE)
+    message: "Insecure deserialization: untrusted pickle data can execute code."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A08:2021 - Software and Data Integrity Failures", cwe: "CWE-502"}
+
+  - id: insecure-yaml-load
+    pattern: yaml.load($DATA)
+    message: "Unsafe YAML load: prefer yaml.safe_load() for untrusted input."
+    languages: [python]
+    severity: ERROR
+    metadata: {owasp: "A08:2021 - Software and Data Integrity Failures", cwe: "CWE-502"}
