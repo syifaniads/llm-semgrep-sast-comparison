@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="820" viewBox="0 0 1500 820" role="img" aria-labelledby="title desc">
+  <title id="title">LLM versus Semgrep SAST comparison pipeline</title>
+  <desc id="desc">Evidence-derived architecture showing intentionally vulnerable fixtures analyzed in parallel by an LLM analyzer and custom Semgrep rules, normalized into a comparison engine and human validation step.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07111f"/><stop offset="1" stop-color="#111827"/></linearGradient><filter id="s"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-opacity="0.24"/></filter><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"/></marker><style>.tt{font:700 34px Inter,Segoe UI,sans-serif;fill:#f8fafc}.sub{font:400 16px Inter,Segoe UI,sans-serif;fill:#94a3b8}.h{font:700 18px Inter,Segoe UI,sans-serif;fill:#f8fafc}.t{font:500 14px Inter,Segoe UI,sans-serif;fill:#cbd5e1}.sm{font:500 12px Inter,Segoe UI,sans-serif;fill:#94a3b8}.box{rx:18;filter:url(#s)}.line{stroke:#94a3b8;stroke-width:2.2;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1500" height="820" fill="url(#bg)"/>
+  <text x="65" y="62" class="tt">LLM vs Semgrep — SAST Comparison Pipeline</text>
+  <text x="65" y="92" class="sub">Reconstructed from the actual analyzer, custom rules, vulnerable fixtures and comparison/normalization code in this repository</text>
+
+  <rect x="70" y="255" width="285" height="220" fill="#172554" stroke="#3b82f6" class="box"/>
+  <text x="118" y="296" class="h">Vulnerable Sample Corpus</text>
+  <text x="112" y="335" class="t">Python + JavaScript fixtures</text>
+  <text x="112" y="368" class="t">SQLi · command injection</text>
+  <text x="112" y="398" class="t">path traversal · SSRF · XXE</text>
+  <text x="112" y="428" class="t">XSS · secrets · crypto · auth</text>
+  <text x="112" y="458" class="sm">educational fixtures only</text>
+
+  <rect x="505" y="135" width="315" height="210" fill="#27203b" stroke="#8b5cf6" class="box"/>
+  <text x="586" y="176" class="h">LLM Analyzer</text>
+  <text x="550" y="212" class="t">numbered source → prompt</text>
+  <text x="550" y="244" class="t">JSON / repaired JSON parsing</text>
+  <text x="550" y="276" class="t">severity · CWE · confidence</text>
+  <text x="550" y="308" class="sm">contextual but non-deterministic</text>
+
+  <rect x="505" y="455" width="315" height="210" fill="#14251f" stroke="#22c55e" class="box"/>
+  <text x="594" y="496" class="h">Semgrep</text>
+  <text x="550" y="532" class="t">custom Python + JS rules</text>
+  <text x="550" y="564" class="t">pattern-based findings</text>
+  <text x="550" y="596" class="t">CWE / category metadata</text>
+  <text x="550" y="628" class="sm">deterministic and reviewable</text>
+
+  <path d="M355 330 L505 240" class="line"/><path d="M355 400 L505 555" class="line"/>
+
+  <rect x="940" y="245" width="330" height="245" fill="#2a1f17" stroke="#f59e0b" class="box"/>
+  <text x="1015" y="286" class="h">Normalization & Comparison</text>
+  <text x="987" y="326" class="t">Finding(file, line, severity, CWE...)</text>
+  <text x="987" y="360" class="t">basename normalization</text>
+  <text x="987" y="394" class="t">key = file + CWE/category</text>
+  <text x="987" y="428" class="t">matched / LLM-only / Semgrep-only</text>
+  <text x="987" y="462" class="sm">lightweight heuristic, not ground truth</text>
+  <path d="M820 240 L940 320" class="line"/><path d="M820 560 L940 420" class="line"/>
+
+  <rect x="970" y="575" width="270" height="105" fill="#2b1721" stroke="#ef4444" class="box"/>
+  <text x="1025" y="615" class="h">Human Validation</text>
+  <text x="1007" y="646" class="t">triage · context · risk judgment</text>
+  <path d="M1105 490 L1105 575" class="line"/>
+
+  <rect x="1300" y="300" width="145" height="135" fill="#111827" stroke="#64748b" rx="16"/>
+  <text x="1328" y="340" class="h">Report</text><text x="1320" y="374" class="sm">HTML findings</text><text x="1319" y="398" class="sm">tool overlap</text><text x="1319" y="422" class="sm">differences</text>
+  <path d="M1270 365 L1300 365" class="line"/>
+
+  <text x="65" y="770" class="sm">The pipeline compares detector output; it does not prove that either tool is categorically more accurate. Ground-truth labels and repeated model trials would be required for stronger benchmark claims.</text>
+</svg>
