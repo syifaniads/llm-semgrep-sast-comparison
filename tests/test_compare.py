@@ -3,13 +3,15 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("compare_module", ROOT / "comparison" / "compare.py")
-compare = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader
+compare = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = compare
 SPEC.loader.exec_module(compare)
 
 
