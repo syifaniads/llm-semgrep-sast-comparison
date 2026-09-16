@@ -1,0 +1,50 @@
+name: Security tooling CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test-comparison:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Unit-test normalization and report generation
+        run: python -m unittest discover -s tests -v
+
+      - name: Compile deterministic Python components
+        run: python -m py_compile comparison/compare.py run_all.py
+
+  validate-semgrep-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Semgrep
+        run: python -m pip install --disable-pip-version-check semgrep
+
+      - name: Validate and execute custom rules on educational fixtures
+        run: |
+          semgrep scan \
+            --config semgrep-sast/rules/python-security.yaml \
+            --config semgrep-sast/rules/javascript-security.yaml \
+            vulnerable-samples \
+            --json --output /tmp/semgrep.json
+          python scripts/validate_semgrep_output.py /tmp/semgrep.json
